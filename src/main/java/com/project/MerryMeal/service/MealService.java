@@ -46,7 +46,10 @@ public class MealService {
     private DeliverRepository delRepository;
 	@Autowired
     private UserRepository userRepository;
-	
+
+	public User getUserId(Long id) {
+		return userRepository.findById(id).get();
+	}
 //campaign	
 	public Campaign SaveCampaign(Campaign cam) {
 		return camRepository.save(cam);
@@ -84,8 +87,9 @@ public class MealService {
 		return listVolunteer;
 	}
 //Menu
-	public Menu SaveMenu(Menu dta) {
-		return menRepository.save(dta);
+	public Menu SaveMenu(Menu mdto) {
+
+	    return menRepository.save(mdto);
 	}
 	public void EditMenu(MenuRegDto dto) {
 		Menu edit = getMenuId(dto.getId());
@@ -138,10 +142,14 @@ public class MealService {
 	public void EditDeliveryStatus(DeliverReqDto dto) {
 		Deliver edit = getDeliverId(dto.getId());
 		edit.setId(dto.getId());
-		edit.setStatus(dto.isStatus());
+		edit.setDelivered(dto.isDelivered());
 		delRepository.save(edit);
 	}
 	public Deliver getDeliverId(Long id) {
 		return delRepository.findById(id).get();
+	}
+	public List<Deliver> listDeliverMember(Long pid) {
+		List<Deliver> list = delRepository.findByDeliveredFalse(pid);
+		return list;
 	}
 }

@@ -59,29 +59,29 @@ public class MerryMealController {
 
 //Campaign
 		@PostMapping(value = "/post-campaign")
-		public ResponseEntity<String> postCampaign(@ModelAttribute CampaignRegDto dtoNew) {
-			String fileName = dtoNew.getFile().getOriginalFilename().replaceAll(" ", "-");
-			String filePath = Paths.get(uploadDirectory, fileName).toString();
-			String fileType = dtoNew.getFile().getContentType();
-			long size = dtoNew.getFile().getSize();
-			String fileSize = String.valueOf(size);
-
-			try {
-				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-				stream.write(dtoNew.getFile().getBytes());
-				stream.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		public ResponseEntity<String> postCampaign(@RequestBody CampaignRegDto dtoNew) {
+//			String fileName = dtoNew.getFile().getOriginalFilename().replaceAll(" ", "-");
+//			String filePath = Paths.get(uploadDirectory, fileName).toString();
+//			String fileType = dtoNew.getFile().getContentType();
+//			long size = dtoNew.getFile().getSize();
+//			String fileSize = String.valueOf(size);
+//
+//			try {
+//				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
+//				stream.write(dtoNew.getFile().getBytes());
+//				stream.close();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 				Date cur_time=new Date();
 				Campaign cam = new Campaign();
 				cam.setTitle(dtoNew.getTitle());
 				cam.setDesc(dtoNew.getDesc());
-				cam.setFilePath(filePath);
-				cam.setFileSize(fileSize);
-				cam.setFileType(fileType);
-				cam.setImage(fileName);
+//				cam.setFilePath(filePath);
+//				cam.setFileSize(fileSize);
+//				cam.setFileType(fileType);
+//				cam.setImage(fileName);
 				cam.setTimedate(cur_time);
 				cam.setStatus(dtoNew.isStatus());
 				mealService.SaveCampaign(cam);
@@ -128,30 +128,30 @@ public class MerryMealController {
 		}
 //Menu
 		@PostMapping(value = "/post-menu")
-		public ResponseEntity<String> newMenu(@ModelAttribute MenuRegDto dtoNew) {
-			String fileName = dtoNew.getFile().getOriginalFilename().replaceAll(" ", "-");
-			String filePath = Paths.get(uploadDirectory, fileName).toString();
-			String fileType = dtoNew.getFile().getContentType();
-			long size = dtoNew.getFile().getSize();
-			String fileSize = String.valueOf(size);
-
-			try {
-				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-				stream.write(dtoNew.getFile().getBytes());
-				stream.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				User paid = userRepository.findById(dtoNew.getPartnerid()).get();
+		public ResponseEntity<String> newMenu(@RequestBody MenuRegDto dtoNew) {
+//			String fileName = dtoNew.getFile().getOriginalFilename().replaceAll(" ", "-");
+//			String filePath = Paths.get(uploadDirectory, fileName).toString();
+//			String fileType = dtoNew.getFile().getContentType();
+//			long size = dtoNew.getFile().getSize();
+//			String fileSize = String.valueOf(size);
+//
+//			try {
+//				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
+//				stream.write(dtoNew.getFile().getBytes());
+//				stream.close();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+				User paid = mealService.getUserId(dtoNew.getPartnerid());
 				Menu men = new Menu();
 				men.setName(dtoNew.getName());
 				men.setDesc(dtoNew.getDesc());
 				men.setPartnerid(paid);
-				men.setFilePath(filePath);
-				men.setFileSize(fileSize);
-				men.setFileType(fileType);
-				men.setImage(fileName);
+//				men.setFilePath(filePath);
+//				men.setFileSize(fileSize);
+//				men.setFileType(fileType);
+//				men.setImage(fileName);
 				men.setStatus(dtoNew.isStatus());
 				mealService.SaveMenu(men);
 				return new ResponseEntity<>("Post Menu Successful! ",HttpStatus.OK);
@@ -165,7 +165,12 @@ public class MerryMealController {
 		}
 		@GetMapping("/menu-list")
 		public List<Menu> Menulist() {
-			List<Menu> result = mealService.listAllMenu();
+			List<Menu> result = mealService.listMenuStatus();
+			return result;		
+		}
+		@GetMapping("/menu-partner/{pid}")
+		public List<Menu> MenuPartnerlist(@PathVariable("pid") Long pid) {
+			List<Menu> result = mealService.listMenuPartner(pid);
 			return result;		
 		}
 		@GetMapping("/menu/{menId}")
@@ -176,12 +181,15 @@ public class MerryMealController {
 //Order
 		@PostMapping(value = "/post-order")
 		public ResponseEntity<String> newOrder(@RequestBody OrderReqDto dtoNew) {
+				Date cur_time=new Date();
 				User usid = userRepository.findById(dtoNew.getMemberid()).get();
+				User paid = userRepository.findById(dtoNew.getPartnerid()).get();
 				Menu meid = mealService.getMenuId(dtoNew.getMenuid());
 				Order ord = new Order();
 				ord.setMemberid(usid);
 				ord.setMenuid(meid);
-				ord.setDatetime(dtoNew.getDatetime());
+				ord.setPartnerid(paid);
+				ord.setDatetime(cur_time);
 				ord.setStatus(dtoNew.isStatus());
 				mealService.SaveOrder(ord);
 				return new ResponseEntity<>("New Order Successfuly added! ",HttpStatus.OK);	
@@ -191,8 +199,8 @@ public class MerryMealController {
 				mealService.EditOrderStatus(dtoNew);
 				return new ResponseEntity<>("Edit Order Status Successful! ",HttpStatus.OK);
 		}
-		@GetMapping("/order-list")
-		public List<Order> Orderlist(Long pid) {
+		@GetMapping("/order-list/{pid}")
+		public List<Order> Orderlist(@PathVariable("pid") Long pid) {
 			List<Order> result = mealService.listOrderPartner(pid);
 			return result;		
 		}
@@ -210,11 +218,13 @@ public class MerryMealController {
 		@PostMapping(value = "/post-delivery")
 		public ResponseEntity<String> newDelivery(@RequestBody DeliverReqDto dtoNew) {
 				User raid = userRepository.findById(dtoNew.getRiderid()).get();
+				User meid = userRepository.findById(dtoNew.getMemberid()).get();
 				Order orid = mealService.getOrderId(dtoNew.getOrderid());
 				Date cur_time=new Date();
 				Deliver del = new Deliver();
 				del.setOrderid(orid);
 				del.setRiderid(raid);
+				del.setMemberid(meid);
 				del.setDatetime(cur_time);
 				del.setStatus(dtoNew.isStatus());
 				del.setDelivered(dtoNew.isDelivered());
@@ -227,9 +237,9 @@ public class MerryMealController {
 				return new ResponseEntity<>("Edit Delivery Status Successful! ",HttpStatus.OK);
 			
 		}
-		@GetMapping("/delivery/{ordId}")
-		public Deliver getDeliverDetail(@PathVariable("delId") Long delId) {
-		   Deliver cam = mealService.getDeliverId(delId);
+		@GetMapping("/delivery/{memId}")
+		public List<Deliver> getDeliveryList(@PathVariable("memId") Long delId) {
+		   List<Deliver> cam = mealService.listDeliverMember(delId);
 		   return cam;
 		 }	
 		

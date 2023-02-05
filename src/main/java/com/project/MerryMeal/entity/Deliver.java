@@ -24,8 +24,11 @@ public class Deliver {
 	@JoinColumn(name = "order_id")
 	private Order orderid;
 	@ManyToOne
-	@JoinColumn(name = "member_id")
+	@JoinColumn(name = "rider_id")
 	private User riderid;
+	@ManyToOne
+	@JoinColumn(name = "member_id")
+	private User memberid;
 	private Date datetime;
 	private boolean status;
 	private boolean delivered;
@@ -48,6 +51,13 @@ public class Deliver {
 	}
 	public void setRiderid(User riderid) {
 		this.riderid = riderid;
+	}
+	
+	public User getMemberid() {
+		return memberid;
+	}
+	public void setMemberid(User memberid) {
+		this.memberid = memberid;
 	}
 	public Date getDatetime() {
 		return datetime;

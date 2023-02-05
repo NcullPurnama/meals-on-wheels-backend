@@ -1,14 +1,8 @@
 package com.project.MerryMeal.dto;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.project.MerryMeal.entity.User;
 
 
 

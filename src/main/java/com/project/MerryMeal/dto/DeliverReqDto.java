@@ -15,7 +15,8 @@ import com.project.MerryMeal.entity.User;
 public class DeliverReqDto {
 	private Long id;
 	private Long orderid;
-	private Long riderid;	
+	private Long riderid;
+	private Long memberid;
 	private Date datetime;
 	private boolean status;
 	private boolean delivered;
@@ -38,6 +39,13 @@ public class DeliverReqDto {
 	}
 	public void setRiderid(Long riderid) {
 		this.riderid = riderid;
+	}
+	
+	public Long getMemberid() {
+		return memberid;
+	}
+	public void setMemberid(Long memberid) {
+		this.memberid = memberid;
 	}
 	public Date getDatetime() {
 		return datetime;

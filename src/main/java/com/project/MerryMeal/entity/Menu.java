@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.project.MerryMeal.dto.MenuRegDto;
+
 @Entity
 @Table(name = "menu_tb")
 public class Menu {
@@ -41,6 +43,15 @@ public class Menu {
 	private boolean status;
 	
 	public Menu() {}
+	
+
+	public Menu(MenuRegDto dto, User usr) {
+		this.name = dto.getName();
+		this.desc = dto.getDesc();
+		this.partnerid = usr;
+		this.status = dto.isStatus();
+	}
+
 
 	public Long getId() {
 		return id;
