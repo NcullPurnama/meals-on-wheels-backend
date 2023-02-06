@@ -242,5 +242,4 @@ public class MerryMealController {
 		   List<Deliver> cam = mealService.listDeliverMember(delId);
 		   return cam;
 		 }	
-		
 }

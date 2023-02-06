@@ -50,6 +50,14 @@ public class MealService {
 	public User getUserId(Long id) {
 		return userRepository.findById(id).get();
 	}
+	public List<User> listMember() {
+		List<User> listMember = userRepository.findByRoleMember();
+		return listMember;
+	}
+	public List<User> listUser() {
+		List<User> listUser = userRepository.findAll();
+		return listUser;
+	}
 //campaign	
 	public Campaign SaveCampaign(Campaign cam) {
 		return camRepository.save(cam);
