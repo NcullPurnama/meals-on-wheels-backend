@@ -242,4 +242,9 @@ public class MerryMealController {
 		   List<Deliver> cam = mealService.listDeliverMember(delId);
 		   return cam;
 		 }	
+		@GetMapping("/delivery-list/{rid}")
+		public List<Deliver> getDeliveryListRider(@PathVariable("rid") Long rId) {
+		   List<Deliver> cam = mealService.listDeliverRider(rId);
+		   return cam;
+		 }
 }

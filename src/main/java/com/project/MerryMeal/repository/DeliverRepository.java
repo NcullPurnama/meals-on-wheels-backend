@@ -19,4 +19,6 @@ public interface DeliverRepository extends JpaRepository<Deliver, Long>{
 
 	@Query(value = "SELECT * FROM deliver_tb WHERE delivered = 0 AND member_id = :id", nativeQuery = true)
 	public List<Deliver> findByDeliveredFalse(@Param("id") Long meid);
+	@Query(value = "SELECT * FROM deliver_tb WHERE delivered = 0 AND rider_id = :id", nativeQuery = true)
+	public List<Deliver> findByRider(@Param("id") Long meid);
 }

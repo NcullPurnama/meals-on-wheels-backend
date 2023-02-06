@@ -46,4 +46,9 @@ public class UserController {
 		List<User> result = mealService.listUser();
 		return result;		
 	}
+    @GetMapping("/rider-list")
+	public List<User> Riderlist() {
+		List<User> result = mealService.listRider();
+		return result;		
+	}
 }

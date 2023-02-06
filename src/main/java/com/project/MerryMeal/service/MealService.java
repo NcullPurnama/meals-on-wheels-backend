@@ -54,6 +54,10 @@ public class MealService {
 		List<User> listMember = userRepository.findByRoleMember();
 		return listMember;
 	}
+	public List<User> listRider() {
+		List<User> listMember = userRepository.findByRoleRider();
+		return listMember;
+	}
 	public List<User> listUser() {
 		List<User> listUser = userRepository.findAll();
 		return listUser;
@@ -158,6 +162,10 @@ public class MealService {
 	}
 	public List<Deliver> listDeliverMember(Long pid) {
 		List<Deliver> list = delRepository.findByDeliveredFalse(pid);
+		return list;
+	}
+	public List<Deliver> listDeliverRider(Long pid) {
+		List<Deliver> list = delRepository.findByRider(pid);
 		return list;
 	}
 }
